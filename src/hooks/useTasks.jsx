@@ -1,5 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import api from "../api/axios";
+import toast from "react-hot-toast";
 
 const fetchTasks = async () => {
   const { data } = await api.get("/tasks?sort=-priority,dueDate");
@@ -12,13 +13,9 @@ const createTask = async (newTask) => {
 };
 
 const updateTask = async ({ updates, id }) => {
-  try {
-    if (!id) throw new Error("Task ID is required");
-    const { data } = await api.put(`/tasks/${id}`, updates);
-    return data;
-  } catch (error) {
-    console.error("Error updating task:", error);
-  }
+  if (!id) throw new Error("Task ID is required");
+  const { data } = await api.put(`/tasks/${id}`, updates);
+  return data;
 };
 
 function useTasks() {
@@ -30,17 +27,19 @@ function useTasks() {
   });
 
   const tasks = data?.data || [];
-  const todo = tasks ? tasks.filter((task) => task.status === "To Do") : [];
-  const inprogress = tasks
-    ? tasks.filter((task) => task.status === "In Progress")
-    : [];
-  const done = tasks ? tasks.filter((task) => task.status === "Done") : [];
+  const todo = tasks.filter((task) => task.status === "To Do");
+  const inprogress = tasks.filter((task) => task.status === "In Progress");
+  const done = tasks.filter((task) => task.status === "Done");
 
   // Create task mutation
   const createMutation = useMutation({
     mutationFn: createTask,
     onSuccess: () => {
       queryClient.invalidateQueries(["tasks"]);
+      toast.success("Task created successfully!");
+    },
+    onError: (err) => {
+      toast.error(err.message || "Failed to create task");
     },
   });
 
@@ -51,6 +50,10 @@ function useTasks() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["tasks"]);
+      toast.success("Task deleted!");
+    },
+    onError: (err) => {
+      toast.error(err.message || "Failed to delete task");
     },
   });
 
@@ -58,6 +61,10 @@ function useTasks() {
     mutationFn: updateTask,
     onSuccess: () => {
       queryClient.invalidateQueries(["tasks"]);
+      toast.success("Task updated!");
+    },
+    onError: (err) => {
+      toast.error(err.message || "Failed to update task");
     },
   });
 
@@ -70,9 +77,9 @@ function useTasks() {
     done,
     isError,
     isLoading,
-    isDeleting: deleteMutation.isSuccess || deleteMutation.isPending,
-    isUpdating: updateMutation.isSuccess || updateMutation.isPending,
-    isCreating: createMutation.isSuccess || createMutation.isPending,
+    isDeleting: deleteMutation.isPending,
+    isUpdating: updateMutation.isPending,
+    isCreating: createMutation.isPending,
   };
 }
 

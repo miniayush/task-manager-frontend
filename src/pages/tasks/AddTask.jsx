@@ -73,16 +73,26 @@ export default function AddTask({ hideForm, task }) {
             {...register("priority")}
             className="text-xs px-2 py-1 rounded-full border"
           >
-            <option value={0}>Low</option>
-            <option value={1}>Medium</option>
-            <option value={2}>High</option>
-            <option value={3}>Urgent</option>
+            <option value={3} className="text-red-600 font-bold">
+              Urgent
+            </option>
+            <option value={2} className="text-yellow-500 font-bold">
+              High
+            </option>
+            <option value={1} className="text-green-600 font-bold">
+              Medium
+            </option>
+            <option value={0} className="text-blue-600 font-bold ">
+              Low
+            </option>
           </select>
 
           <input
             type="text"
-            placeholder={(errors.title && errors.title.message) || "Task title"}
-            className={`flex-1 border-b focus:outline-none focus:border-black text-sm font-medium ${
+            placeholder={
+              (errors.title && errors.title.message) || "Task title..."
+            }
+            className={`focus:outline-none border-b text-sm font-medium ${
               errors.title ? "text-red-700 border-red-700" : ""
             }`}
             {...register("title", { required: "Title is required" })}
@@ -127,7 +137,7 @@ export default function AddTask({ hideForm, task }) {
         </div>
 
         {/* Dates */}
-        <div className="grid grid-cols-3 gap-3 text-xs">
+        <div className="flex flex-col lg:flex-row gap-3 text-xs flex-wrap">
           <div>
             <label className="block text-gray-400">Start</label>
             <input

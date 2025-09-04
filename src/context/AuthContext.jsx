@@ -37,7 +37,7 @@ export function AuthProvider({ children }) {
       setIsAuthenticated(true);
       navigate("/tasks");
     } catch (error) {
-      console.error("Registration failed:", error); //todo
+      throw new Error("Registration failed: " + error.response.data.message);
     }
   };
 
@@ -51,7 +51,7 @@ export function AuthProvider({ children }) {
       setIsAuthenticated(true);
       navigate("/tasks");
     } catch (error) {
-      console.error("Login failed:", error.response.data.message); // todo
+      throw new Error("Login failed: " + error.response.data.message);
     }
   };
 

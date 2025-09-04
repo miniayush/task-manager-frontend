@@ -25,15 +25,13 @@ function TaskCard({ task }) {
   if (isDeleting || isUpdating) {
     return <TaskCard.Skeleton />;
   }
+  console.log("isUpdating:", isUpdating);
   if (isEditing) {
     return <AddTask task={task} hideForm={() => setIsEditing(false)} />;
   }
   if (!isEditing)
     return (
-      <div
-        className="bg-white rounded-xl  border border-stone-200 p-4 mb-3 relative group overflow-hidden"
-        onClick={() => setIsEditing(true)}
-      >
+      <div className="bg-white rounded-xl  border border-stone-200 p-4 mb-3 relative group overflow-hidden">
         {/* Header */}
         <div className="flex gap-2 items-start mb-2 pr-6">
           <h3 className="text-lg font-bold text-gray-700 flex-1">
@@ -160,6 +158,7 @@ function TaskCard({ task }) {
 
         {/* Hover actions */}
         <div className="absolute right-0 top-0  pt-3 pb-3 pr-2 justify-evenly flex flex-col h-full translate-x-12 group-hover:translate-x-0 opacity-0  group-hover:opacity-100 transition-transform ease-in">
+          <Button onClick={() => setIsEditing(true)} variant="edit" />
           <Button onClick={() => deleteTask(task._id)} variant="delete" />
           {task.status === "To Do" && (
             <Button
