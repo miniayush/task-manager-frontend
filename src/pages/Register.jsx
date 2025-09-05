@@ -63,6 +63,7 @@ export default function Register() {
               type="password"
               placeholder="Password"
               required
+              minLength={6}
               className="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
               value={password}
               onChange={(e) => setPassword(e.target.value)}

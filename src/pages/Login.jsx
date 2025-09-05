@@ -51,6 +51,7 @@ function Login() {
               type="password"
               name="password"
               placeholder="Password"
+              minLength={6}
               required
               className="w-full border border-gray-300 p-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
             />
