@@ -12,16 +12,12 @@ import Reminder from "./components/Reminder.jsx";
 
 function App() {
   useEffect(() => {
-    socket.on("taskReminder", (data) => {
-      console.log("🔔 Reminder received:", data);
+    socket.once("taskReminder", (data) => {
       const message = `Reminder: "${data.title}" ${
         data.dueDate ? `is due at ${data.dueDate}` : "is due soon!"
       }`;
       Reminder(message);
     });
-    return () => {
-      socket.off("taskReminder");
-    };
   }, []);
 
   return (
