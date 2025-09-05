@@ -7,27 +7,36 @@ const initialState = {
   category: "Other",
   priority: 1,
   status: "To Do",
-  startDate: new Date(),
+  startDate: "",
   dueDate: "",
   reminder: "",
   recurrence: "None",
 };
+function toLocalDateTimeString(date) {
+  if (!date) return "";
+  const d = new Date(date);
+  const offset = d.getTimezoneOffset(); // in minutes
+  const local = new Date(d.getTime() - offset * 60 * 1000);
+  return local.toISOString().slice(0, 16);
+}
 
 export default function AddTask({ hideForm, task }) {
   const { createTask, updateTask } = useTasks();
   const editMode = !!task;
+  console.log(task);
   const formData = task && {
     category: task.category,
     description: task.description,
-    dueDate: task.dueDate && task.dueDate.split("T")[0],
+    dueDate: toLocalDateTimeString(task.dueDate),
     priority: task.priority,
     recurrence: task.recurrence,
-    reminderDate: task.reminder && task.reminder.split("T")[0],
-    startDate: task.startDate && task.startDate.split("T")[0],
+    reminder: toLocalDateTimeString(task.reminder),
+    startDate: toLocalDateTimeString(task.startDate),
     status: task.status,
     title: task.title,
   };
-  console.log("Form data:", task);
+  initialState.startDate = toLocalDateTimeString(new Date());
+
   const {
     register,
     handleSubmit,
@@ -40,7 +49,7 @@ export default function AddTask({ hideForm, task }) {
   });
 
   const startDate = watch("startDate");
-  const reminderDate = watch("reminderDate");
+  const reminder = watch("reminder");
   const dueDate = watch("dueDate");
 
   const onSubmit = (data) => {
@@ -51,7 +60,7 @@ export default function AddTask({ hideForm, task }) {
     const finalData = {
       ...data,
       startDate: start,
-      reminderDate: reminder,
+      reminder: reminder,
       dueDate: due,
     };
 
@@ -68,7 +77,17 @@ export default function AddTask({ hideForm, task }) {
     <div className="bg-white rounded-lg shadow p-3 mb-3 relative">
       <form className="space-y-3" onSubmit={handleSubmit(onSubmit)}>
         {/* Header similar to TaskCard */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 flex-wrap justify-between">
+          <input
+            type="text"
+            placeholder={
+              (errors.title && errors.title.message) || "Task title..."
+            }
+            className={`focus:outline-none border-b text-sm font-medium ${
+              errors.title ? "text-red-700 border-red-700" : ""
+            }`}
+            {...register("title", { required: "Title is required" })}
+          />
           <select
             {...register("priority")}
             className="text-xs px-2 py-1 rounded-full border"
@@ -86,17 +105,6 @@ export default function AddTask({ hideForm, task }) {
               Low
             </option>
           </select>
-
-          <input
-            type="text"
-            placeholder={
-              (errors.title && errors.title.message) || "Task title..."
-            }
-            className={`focus:outline-none border-b text-sm font-medium ${
-              errors.title ? "text-red-700 border-red-700" : ""
-            }`}
-            {...register("title", { required: "Title is required" })}
-          />
         </div>
         {/* {errors.title && (
         )} */}
@@ -141,8 +149,8 @@ export default function AddTask({ hideForm, task }) {
           <div>
             <label className="block text-gray-400">Start</label>
             <input
-              type="date"
-              min={new Date().toISOString().split("T")[0]}
+              type="datetime-local"
+              // min={new Date().toISOString().slice(0, 16)}
               className={`border p-1 w-full rounded ${
                 errors.startDate ? "border-red-500" : ""
               }`}
@@ -165,12 +173,12 @@ export default function AddTask({ hideForm, task }) {
           <div>
             <label className="block text-gray-400">Reminder</label>
             <input
-              type="date"
-              min={startDate || new Date().toISOString().split("T")[0]}
+              type="datetime-local"
+              min={startDate || new Date().toISOString().slice(0, 16)}
               className={`border p-1 w-full rounded ${
-                errors.reminderDate ? "border-red-500" : ""
+                errors.reminder ? "border-red-500" : ""
               }`}
-              {...register("reminderDate", {
+              {...register("reminder", {
                 validate: (value) => {
                   if (
                     startDate &&
@@ -186,9 +194,9 @@ export default function AddTask({ hideForm, task }) {
                 },
               })}
             />
-            {errors.reminderDate && (
+            {errors.reminder && (
               <p className="text-red-500 text-[10px]">
-                {errors.reminderDate.message}
+                {errors.reminder.message}
               </p>
             )}
           </div>
@@ -196,7 +204,8 @@ export default function AddTask({ hideForm, task }) {
           <div>
             <label className="block text-gray-400">Due</label>
             <input
-              type="date"
+              type="datetime-local"
+              min={reminder || new Date().toISOString().slice(0, 16)}
               className={`border p-1 w-full rounded ${
                 errors.dueDate ? "border-red-500" : ""
               }`}

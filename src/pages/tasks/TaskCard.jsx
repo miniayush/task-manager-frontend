@@ -9,12 +9,14 @@ function formatDate(date) {
   return new Date(date).toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   });
 }
 const TAGCOLOR = {
-  Work: "bg-blue-100 text-blue-700",
-  Personal: "bg-green-100 text-green-700",
-  Other: "bg-gray-100 text-gray-700",
+  Work: "text-blue-700",
+  Personal: "text-green-700",
+  Other: "text-gray-700",
 };
 
 function TaskCard({ task }) {
@@ -25,7 +27,6 @@ function TaskCard({ task }) {
   if (isDeleting || isUpdating) {
     return <TaskCard.Skeleton />;
   }
-  console.log("isUpdating:", isUpdating);
   if (isEditing) {
     return <AddTask task={task} hideForm={() => setIsEditing(false)} />;
   }
@@ -52,13 +53,14 @@ function TaskCard({ task }) {
                 TAGCOLOR[task.category]
               }`}
             >
+              {task.category}
               <svg
                 xmlns="http://www.w3.org/2000/svg"
-                fill="none"
+                fill="currentColor"
                 viewBox="0 0 24 24"
                 strokeWidth="1.5"
                 stroke="currentColor"
-                className="size-4"
+                className="size-3"
               >
                 <path
                   strokeLinecap="round"
@@ -71,7 +73,6 @@ function TaskCard({ task }) {
                   d="M6 6h.008v.008H6V6Z"
                 />
               </svg>
-              {task.category}
             </span>
           )}
           {task.recurrence !== "None" && (
@@ -87,7 +88,7 @@ function TaskCard({ task }) {
         )}
 
         {/* Dates */}
-        <div className="text-xs pr-6 text-gray-600 flex justify-between">
+        <div className="text-xs pr-6 text-gray-600 flex justify-between gap-2">
           {task.startDate && (
             <div className="flex items-center gap-1">
               <svg
@@ -104,8 +105,10 @@ function TaskCard({ task }) {
                   d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5"
                 />
               </svg>
-
-              <span>Start: {formatDate(task.startDate)}</span>
+              <div className="flex flex-col gap-1">
+                <span>Start</span>
+                <span> {formatDate(task.startDate)}</span>
+              </div>
             </div>
           )}
 
@@ -125,8 +128,10 @@ function TaskCard({ task }) {
                   d="M14.857 17.082a23.848 23.848 0 0 0 5.454-1.31A8.967 8.967 0 0 1 18 9.75V9A6 6 0 0 0 6 9v.75a8.967 8.967 0 0 1-2.312 6.022c1.733.64 3.56 1.085 5.455 1.31m5.714 0a24.255 24.255 0 0 1-5.714 0m5.714 0a3 3 0 1 1-5.714 0"
                 />
               </svg>
-
-              <span>Reminder: {formatDate(task.reminder)}</span>
+              <div className="flex flex-col gap-1">
+                <span>Reminder</span>
+                <span> {formatDate(task.reminder)}</span>
+              </div>
             </div>
           )}
           {task.dueDate && (
@@ -145,8 +150,10 @@ function TaskCard({ task }) {
                   d="M12 9v3.75m9-.75a9 9 0 1 1-18 0 9 9 0 0 1 18 0Zm-9 3.75h.008v.008H12v-.008Z"
                 />
               </svg>
-
-              <span>Due: {formatDate(task.dueDate)}</span>
+              <div className="flex flex-col gap-1">
+                <span>Due</span>
+                <span> {formatDate(task.dueDate)}</span>
+              </div>
             </div>
           )}
         </div>

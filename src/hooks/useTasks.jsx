@@ -36,7 +36,6 @@ function useTasks() {
     mutationFn: createTask,
     onSuccess: () => {
       queryClient.invalidateQueries(["tasks"]);
-      toast.success("Task created successfully!");
     },
     onError: (err) => {
       toast.error(err.message || "Failed to create task");
@@ -50,7 +49,6 @@ function useTasks() {
     },
     onSuccess: () => {
       queryClient.invalidateQueries(["tasks"]);
-      toast.success("Task deleted!");
     },
     onError: (err) => {
       toast.error(err.message || "Failed to delete task");
@@ -61,7 +59,6 @@ function useTasks() {
     mutationFn: updateTask,
     onSuccess: () => {
       queryClient.invalidateQueries(["tasks"]);
-      toast.success("Task updated!");
     },
     onError: (err) => {
       toast.error(err.message || "Failed to update task");

@@ -1,6 +1,7 @@
 import { createContext, useState, useEffect, useContext } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
+import socket from "../api/socket";
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
@@ -15,6 +16,7 @@ export function AuthProvider({ children }) {
   useEffect(() => {
     const stored = localStorage.getItem("user");
     if (stored) {
+      socket.emit("join", JSON.parse(stored)._id);
       setUser(JSON.parse(stored));
       setIsAuthenticated(true);
     } else {
@@ -44,7 +46,7 @@ export function AuthProvider({ children }) {
   const login = async (email, password) => {
     try {
       const response = await api.post("/users/login", { email, password });
-
+      socket.emit("join", response.data.data._id);
       localStorage.setItem("user", JSON.stringify(response.data.data));
       localStorage.setItem("token", response.data.data.token);
       setUser(response.data.data);
