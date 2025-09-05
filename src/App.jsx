@@ -6,7 +6,6 @@ import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Tasks from "./pages/tasks/Tasks.jsx";
 import ProtectedRoute from "./components/ProtectedRoute";
-import toast from "react-hot-toast";
 import { Toaster } from "react-hot-toast";
 import socket from "./api/socket.js";
 import Reminder from "./components/Reminder.jsx";

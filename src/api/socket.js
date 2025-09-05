@@ -1,5 +1,6 @@
 import { io } from "socket.io-client";
+const apiUrl = import.meta.env.VITE_BACKEND_URL;
 
-const socket = io("http://localhost:5000");
+const socket = io(apiUrl);
 
 export default socket;
